@@ -6,10 +6,10 @@ import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
 import Stack from "@mui/material/Stack"
 
-import Board from './component2/Board';
+import Board from './component/Board';
 import { DEFAULT_BOARD_SIZE } from './config/contants';
 import { calculateWinner, convertMoveListToMatrix, createMatrix, isEqualSquare } from './utilities';
-import GameInfo from './component2/GameInfo';
+import GameInfo from './component/GameInfo';
 
 const App = () => {
 
