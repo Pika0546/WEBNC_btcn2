@@ -8,7 +8,7 @@ import Stack from "@mui/material/Stack"
 
 import Board from './component/Board';
 import { DEFAULT_BOARD_SIZE } from './config/contants';
-import { calculateWinner, convertMoveListToMatrix, createMatrix, isEqualSquare } from './utilities';
+import { calculateWinner, convertMoveListToMatrix, isEqualSquare } from './utilities';
 import GameInfo from './component/GameInfo';
 
 const App = () => {
@@ -27,16 +27,28 @@ const App = () => {
 		],
 		turn: 0,
 		boardSize: DEFAULT_BOARD_SIZE,
-		board: createMatrix(DEFAULT_BOARD_SIZE, DEFAULT_BOARD_SIZE),
 		displayMoves: [],
 		isAsc: true,
 		selectedMove: undefined,
 	})
 
+	const {selectedMove, players, turn, moves, boardSize, isAsc, displayMoves } = useMemo(()=>{
+		return state;
+	},[state]);
+
+	const board = useMemo(()=>{
+		return convertMoveListToMatrix(displayMoves, boardSize)
+	},[displayMoves, boardSize])
+
+	const winSquares = useMemo(()=>{
+		return calculateWinner(board);
+	},[board])
+
 	const onSquareClick = (pos) => {
 		setState((prev) => {
-			if (!prev.board[pos.row][pos.col].length && !calculateWinner(prev.board)) {
+			if (!board[pos.row][pos.col].length && !winSquares) {
 				const newState = {
+					...prev,
 					turn: (!prev.turn) << 0,
 					moves: [...prev.displayMoves, {
 						...pos,
@@ -45,7 +57,6 @@ const App = () => {
 					}],
 					selectedMove: undefined,
 				};
-				newState.board = convertMoveListToMatrix(newState.moves, prev.boardSize);
 				newState.displayMoves = [...newState.moves];
 				return newState;
 			}
@@ -59,7 +70,6 @@ const App = () => {
 			setState(prev => ({
 				...prev,
 				displayMoves: [],
-				board: convertMoveListToMatrix([], prev.boardSize),
 				turn: 0,
 				selectedMove: null,
 			}))
@@ -72,7 +82,6 @@ const App = () => {
 					return {
 						...prev,
 						displayMoves: prev.moves.slice(0, index + 1),
-						board: convertMoveListToMatrix(prev.moves.slice(0, index + 1), prev.boardSize),
 						turn: (!turn) << 0,
 						selectedMove: step,
 					}
@@ -101,13 +110,7 @@ const App = () => {
 		jumpTo(null)
 	}
 
-	const {selectedMove, board, players, turn, moves, boardSize, isAsc } = useMemo(()=>{
-		return state;
-	},[state]);
 
-	const winSquares = useMemo(()=>{
-		return calculateWinner(board);
-	},[board])
 
 	return (
 		<Paper

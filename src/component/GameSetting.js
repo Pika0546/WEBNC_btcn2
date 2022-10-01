@@ -36,7 +36,7 @@ const GameSetting = ({
                     <MenuItem key={item} value={item}>{item}</MenuItem>
                 ))}
             </Select>
-            <Typography variant="caption" display="block" gutterBottom>
+            <Typography variant="caption" display="block" gutterBottom color="red">
                 *Thay đổi cài đặt sẽ khiến trận đấu bắt đầu lại từ đầu.
             </Typography>
         </Paper>
